@@ -12,10 +12,11 @@ var app = express();
 
 
 app.post('/signup', express.urlencoded(), function(req, res) {
+    console.log(req.body);
   // in a production environment you would ideally add salt and store that in the database as well
   // or even use bcrypt instead of sha256. No need for external libs with sha256 though
   var password = crypto.createHash('sha256').update(req.body.password).digest('hex');
-  db.get("SELECT FROM users WHERE username = ?", [req.body.username], function(err, row) {
+  db.get("SELECT * FROM users WHERE username = ?", [req.body.username], function(err, row) {
     if(row != undefined ) {
       console.error("can't create user " + req.body.username);
       res.status(409);
@@ -40,7 +41,7 @@ app.post('/login', express.urlencoded(), function(req, res) {
 
       var token = jwt.sign(payload, KEY, {algorithm: 'HS256', expiresIn: "15d"});
       console.log("Success");
-      res.send(token);
+      res.json({'token':token});
     } else {
       console.error("Failure");
       res.status(401)
@@ -60,6 +61,18 @@ app.get('/data', function(req, res) {
   }
 
 });
+
+//這是網站的根目錄首頁，也是homepage
+app.get("/", (req, res) => {
+  console.log(__dirname);
+  console.log(__filename);
+  res.sendFile(__dirname + "/index.html");
+});
+app.post("/logout", (req, res) => {
+  console.log('logout called');
+  res.json({msg:"System logouted!"});
+});  
+
 
 let port = process.env.PORT || 3000;
 app.listen(port, function () {
