@@ -31,7 +31,7 @@ app.post('/signup', express.urlencoded(), function(req, res) {
 });
 
 app.post('/login', express.urlencoded(), function(req, res) {
-  console.log(req.body.username + " attempted login");
+  console.log(req.body);
   var password = crypto.createHash('sha256').update(req.body.password).digest('hex');
   db.get("SELECT * FROM users WHERE (username, password) = (?, ?)", [req.body.username, password], function(err, row) {
     if(row != undefined ) {
@@ -41,7 +41,7 @@ app.post('/login', express.urlencoded(), function(req, res) {
 
       var token = jwt.sign(payload, KEY, {algorithm: 'HS256', expiresIn: "15d"});
       console.log("Success");
-      res.json({'token':token});
+      res.json({'token':token,'statusCode':200});
     } else {
       console.error("Failure");
       res.status(401)
@@ -72,6 +72,16 @@ app.post("/logout", (req, res) => {
   console.log('logout called');
   res.json({msg:"System logouted!"});
 });  
+
+//JSONP Get Request
+app.get('/endpointJSONP', function(req, res){
+
+  //LOG  
+  console.log('JSONP response');
+  console.log(req.query);
+  //JSONP Response (doc: http://expressjs.com/api.html#res.jsonp) 
+  res.jsonp(req.query) 
+});
 
 
 let port = process.env.PORT || 3000;

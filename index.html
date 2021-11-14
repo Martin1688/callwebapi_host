@@ -80,6 +80,25 @@
           }
         });      
     });
+                 //Handler on JSON anchor click                 
+                 $('#select_link_JSON').click(function(e){
+                 
+                 e.preventDefault();
+                 //LOG
+                 console.log('select_link_JSON clicked');
+                
+                //JSON request     
+                 $.ajax({
+                     data: JSON.stringify(data),
+                     contentType: 'application/json',
+                     url: '/endpointJSON',                      
+                     success: function(data) {
+                         console.log('success');
+                         console.log(JSON.stringify(data));
+                     }
+                 });
+             }); 
+
     });
     </script>
   
@@ -97,6 +116,7 @@
     <button id="badLogin" style="display: none;">Bad Login</button>
     <button id="logout">Logout</button>
   </div>
-</div>
+</div> 
+<div id="select_div_JSONP"><a href="#" id="select_link_JSONP">Test JSONP</a></div>
 </body>
 </html>
